@@ -10,6 +10,10 @@ const App = () => {
     on: boolean
   }
 
+  const MAX_TIME = 900000 * 4;
+  const MAX_MINUTES = 60;
+  const MAX_SECONDS = 60;
+
   const [timer, setTimer] = useState<timerInterface>({
     time: 1500000,
     formatTimeMinute: 25,
@@ -17,74 +21,23 @@ const App = () => {
     on: false
   });
 
-  // const onStartCick = () => {
-  //   setTimer({
-  //     time: 1500000,
-  //     on: true
-  //   });
-  // }
+  const updateTimer = (newTime: number) => {
+    const clampedTime = Math.min(Math.max(newTime, 0), MAX_TIME);
+    const newMinutes = Math.min(Math.max(Math.floor(clampedTime / 60000), 0), MAX_MINUTES);
+    const newSeconds = Math.min(Math.max(Math.floor((clampedTime % 60000) / 1000), 0), MAX_SECONDS);
 
-  const addSecond = () => {
-    const newTimer = {
+    setTimer({
       ...timer,
-      formatTimeSecond: timer.formatTimeSecond + 1,
-      time: timer.time + 1000
-    }
-    
-    setTimer(newTimer);
-
-    if (timer.formatTimeSecond == 59) {
-      const newTimer = {
-        ...timer,
-        formatTimeSecond: 0,
-        formatTimeMinute: timer.formatTimeMinute + 1,
-      }
-      
-      setTimer(newTimer);
-    }
+      time: clampedTime,
+      formatTimeMinute: newMinutes,
+      formatTimeSecond: newSeconds
+    });
   }
 
-  const addMinute = () => {
-    const newTimer = {
-      ...timer,
-      formatTimeMinute: timer.formatTimeMinute + 1,
-      time: timer.time + 60000
-    }
-
-    setTimer(newTimer);
-
-    if (timer.formatTimeMinute == 60) {
-      const newTimer = {
-        ...timer,
-        formatTimeMinute: 60,
-        time: 900000 * 4
-      }
-  
-      setTimer(newTimer);
-    }
-  }
-
-  const subSecond = () => {
-    const newTimer = {
-      ...timer,
-      formatTimeSecond: timer.formatTimeSecond - 1,
-      time: timer.time - 1000
-    }
-
-    setTimer(newTimer);
-  }
-
-  const subMinute = () => {
-    const newTimer = {
-      ...timer,
-      formatTimeMinute: timer.formatTimeMinute - 1,
-      time: timer.time - 60000
-    }
-
-    setTimer(newTimer);
-  }
-
-
+  const addSecond = () => updateTimer(timer.time + 1000);
+  const addMinute = () => updateTimer(timer.time + 60000);
+  const subSecond = () => updateTimer(timer.time - 1000);
+  const subMinute = () => updateTimer(timer.time - 60000);
 
   return (
     <div className="flex flex-col gap-10 w-screen h-screen items-center justify-center bg-red-500">
