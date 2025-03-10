@@ -30,10 +30,18 @@ const App = () => {
       formatTimeSecond: timer.formatTimeSecond + 1,
       time: timer.time + 1000
     }
-
+    
     setTimer(newTimer);
 
-    console.log(timer)
+    if (timer.formatTimeSecond == 59) {
+      const newTimer = {
+        ...timer,
+        formatTimeSecond: 0,
+        formatTimeMinute: timer.formatTimeMinute + 1,
+      }
+      
+      setTimer(newTimer);
+    }
   }
 
   const addMinute = () => {
@@ -45,7 +53,15 @@ const App = () => {
 
     setTimer(newTimer);
 
-    console.log(timer)
+    if (timer.formatTimeMinute == 60) {
+      const newTimer = {
+        ...timer,
+        formatTimeMinute: 60,
+        time: 900000 * 4
+      }
+  
+      setTimer(newTimer);
+    }
   }
 
   const subSecond = () => {
@@ -56,8 +72,6 @@ const App = () => {
     }
 
     setTimer(newTimer);
-
-    console.log(timer)
   }
 
   const subMinute = () => {
@@ -68,8 +82,6 @@ const App = () => {
     }
 
     setTimer(newTimer);
-
-    console.log(timer)
   }
 
 
