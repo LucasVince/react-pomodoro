@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 const App = () => {
 
   interface timerInterface {
-    time: number,
-    formatTimeMinute: number,
-    formatTimeSecond: number,
-    on: boolean
+    time: number;
+    formatTimeMinute: number;
+    formatTimeSecond: number;
+    on: boolean;
   }
 
   const MAX_TIME = 900000 * 4;
@@ -51,24 +51,33 @@ const App = () => {
 
     setTimer(newTimer);
 
-    let subSecondsInterval:number | undefined;
+    let subInterval: number | undefined;
+    const loopTime = 300000;
 
     if (newTimer.on) {
-      subSecondsInterval = setInterval(() => {    
-        setTimer((timer) => {
+      subInterval = setInterval(() => {
+        setTimer((prevTimer) => {
           let newTimer = {
-            ...timer,
-            formatTimeSecond: timer.formatTimeSecond - 1
+            ...prevTimer,
+            formatTimeSecond: prevTimer.formatTimeSecond - 1
           };
 
           if (newTimer.formatTimeSecond < 0) {
-            let newTimer = {
-              ...timer,
+            newTimer = {
+              ...prevTimer,
               formatTimeSecond: 59,
-              formatTimeMinute: timer.formatTimeMinute - 1
+              formatTimeMinute: prevTimer.formatTimeMinute - 1
             };
+          }
 
-            return newTimer;
+          if (newTimer.formatTimeMinute <= 0 && newTimer.formatTimeSecond <= 0) {
+            alert('Rest Time');
+            newTimer = {
+              ...prevTimer,
+              formatTimeMinute: 5,
+              formatTimeSecond: 0,
+              time: loopTime
+            };
           }
 
           return newTimer;
@@ -80,22 +89,32 @@ const App = () => {
           ...timer,
           on: false
         }
-    
+
         setTimer(newTimer);
-        clearInterval(subSecondsInterval);
-      }, newTimer.time);
+
+        clearInterval(subInterval);
+      }, loopTime);
     } else {
-      if (subSecondsInterval) {
-        clearInterval(subSecondsInterval);
+      if (subInterval) {
+        clearInterval(subInterval);
       }
     }
   }
 
   return (
     <div className="flex flex-col gap-10 w-screen h-screen items-center justify-center bg-red-500">
-      <Timer onAddSecond={addSecond} onAddMinute={addMinute} onSubSecond={subSecond} onSubMinute={subMinute} timeSecond={timer.formatTimeSecond} timeMinute={timer.formatTimeMinute} onStartClick={onStartClick} isTimerOn={timer.on}></Timer>
+      <Timer 
+        onAddSecond={addSecond} 
+        onAddMinute={addMinute} 
+        onSubSecond={subSecond} 
+        onSubMinute={subMinute} 
+        timeSecond={timer.formatTimeSecond} 
+        timeMinute={timer.formatTimeMinute} 
+        onStartClick={onStartClick} 
+        isTimerOn={timer.on} 
+      />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
